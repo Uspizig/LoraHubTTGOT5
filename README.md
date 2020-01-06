@@ -13,5 +13,18 @@ You may find in this Repository:
 3. Pinning: Pin Description
 4. Software: A how to make these things running relatively easy in an Arduino IDE
 
-My projects are influenced by Dave G6EJD and Andreas Spiess. So do me a favor and watch their videos.
+What you need to do to get the SW Running:
+1. Clone this Git: https://github.com/ZinggJM/GxEPD and install to your Arduino lib folder
+2. Replace the two files with the ones provided in Software
+3. Install: https://github.com/thesolarnomad/lora-serialization
+4. try out one of the examples
+
+What you need to get the HW:
+1. Download the Gerber and BOM Files
+2. Upload to JLCPCB
+3. Wait 2 Weeks
+4. Solder 3 Diodes, Antenna Connector and RFM Module on the Board
+5. (Optional): Solder Battery Connector and TPL5110 Chip on the Board.
+
+My projects are influenced by Dave(G6EJD) and Andreas Spiess. So do me a favor and watch their videos.
 
