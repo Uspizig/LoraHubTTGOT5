@@ -13,5 +13,5 @@ You may find in this Repository:
 3. Pinning: Pin Description
 4. Software: A how to make these things running relatively easy in an Arduino IDE
 
-My projects are influenced by Dave G6EJD and Andreas Spiess so do me a favor and watch their videos.
+My projects are influenced by Dave G6EJD and Andreas Spiess. So do me a favor and watch their videos.
 
