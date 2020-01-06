@@ -1,5 +1,5 @@
 # LoraHubTTGOT5
-(Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is take it as it is.)
+(Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
 A Daughter Board for a TTGO T5 Board with Lora and BME680, BMW280, CCS811 and several other I²C Boards
 
 
