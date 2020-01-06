@@ -1,4 +1,5 @@
 # LoraHubTTGOT5
+(Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is take it as it is.)
 A Daughter Board for a TTGO T5 Board with Lora and BME680, BMW280, CCS811 and several other I²C Boards
 
 
@@ -19,14 +20,17 @@ What you need to do to get the SW Running:
 3. Install: https://github.com/thesolarnomad/lora-serialization
 4. Clone this Git: https://github.com/matthijskooijman/arduino-lmic
 5. Replace the files mentioned in this Pull Request: https://github.com/matthijskooijman/arduino-lmic/pull/77/files
-4. try out one of the examples
+6. Get an App ID, from Thethingsnetwork
+7. Check if your area has LORA TTN Coverage
+8. Try out one of the examples.
 
 What you need to get the HW:
 1. Download the Gerber and BOM Files
 2. Upload to JLCPCB
-3. Wait 2 Weeks
+3. Select SMT Assembly
 4. Solder 3 Diodes, Antenna Connector and RFM Module on the Board
 5. (Optional): Solder Battery Connector and TPL5110 Chip on the Board.
+
 
 My projects are influenced by Dave(G6EJD) and Andreas Spiess. So do me a favor and watch their videos.
 
