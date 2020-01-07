@@ -1,4 +1,7 @@
 # LoraHubTTGOT5
+DO NOT USE!!!
+Got a HW ISSUE RIGHT NOW.!!! ABP Works OTAA NOT!
+
 (Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
 A Daughter Board for a TTGO T5 Board (http://s.click.aliexpress.com/e/NPRqgBkG) with Lora and BME680, BMWE80, CCS811 and connection possibilities for several other I²C Boards
 
