@@ -1,6 +1,6 @@
 # LoraHubTTGOT5
 (Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
-A Daughter Board for a TTGO T5 Board with Lora and BME680, BMW280, CCS811 and several other I²C Boards
+A Daughter Board for a TTGO T5 Board with Lora and BME680, BMWE80, CCS811 and connection possibilities for several other I²C Boards
 
 
 You might have seen several E-Ink Boards from Waveshare lately. I came across some Boards from TTGO with an ESP32 lately on Aliexpress.
