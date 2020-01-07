@@ -25,12 +25,12 @@ What you need to do to get the SW Running:
 8. Try out one of the examples.
 
 What you need to get the HW:
-TTGO T5 EPaper Board: http://s.click.aliexpress.com/e/NPRqgBkG
-RFM95 Lora Chip: http://s.click.aliexpress.com/e/njvObNY8
-Antenna Connector SMA: http://s.click.aliexpress.com/e/5oGOCiY0
-8dBi Antenna 868MHz: http://s.click.aliexpress.com/e/KVkmsTGG
-TPL5110 for Low Power: http://s.click.aliexpress.com/e/EA7q1R48
-Spacer-Screws: http://s.click.aliexpress.com/e/KejkugSM
+- TTGO T5 EPaper Board: http://s.click.aliexpress.com/e/NPRqgBkG
+- RFM95 Lora Chip: http://s.click.aliexpress.com/e/njvObNY8
+- Antenna Connector SMA: http://s.click.aliexpress.com/e/5oGOCiY0
+- 8dBi Antenna 868MHz: http://s.click.aliexpress.com/e/KVkmsTGG
+- TPL5110 for Low Power: http://s.click.aliexpress.com/e/EA7q1R48
+- Spacer-Screws: http://s.click.aliexpress.com/e/KejkugSM
 
 Hub Board:
 1. Download the Gerber and BOM Files
