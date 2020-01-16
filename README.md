@@ -1,8 +1,10 @@
 # LoraHubTTGOT5
 DO NOT USE!!!
-Got a 2 ISSUE RIGHT NOW.!!! 
+Got 3 ISSUES RIGHT NOW.!!! 
 1. https://www.thethingsnetwork.org/forum/t/need-help-with-mcci-lmic-and-ttn-join-wait-issue/30846
-2. Wrong Polarity of Diodes D1, D2, D3
+2. Problems on Diodes D1, D2, D3 Better use 1N4148 SOD-323
+3. RXTimeout problems where you might help me:
+https://www.thethingsnetwork.org/forum/t/ev-txcomplete-takes-240-sec-to-finish-after-ev-txstart-due-to-rxtimeout/33439/1
 
 (Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
 A LORA TTN Daughter Board for a TTGO T5 Board (http://s.click.aliexpress.com/e/NPRqgBkG) with BME680, BME280, CCS811 and connection possibilities for several other I²C Boards
