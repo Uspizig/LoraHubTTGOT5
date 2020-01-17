@@ -1,13 +1,17 @@
-//Test Eink und MCCi Lora mit TTGO T5 Board
-//Join nach 2-3 Versuchen 
-//Probleme: Neue Daten werden aber erst nach 4 Minuten oder 4.30 versendet unabhängig vom TX Interval
+//Test Eink Display with MCCi Lora stack and TTGO T5 Board
+//Join after 2-3 Versuchen 
+//Fixed in this: Packages are transmitted faster
+//Problems: No RX Data seen so far.
+//fix Battery Level Detection
+//Include TPL51110 for Power Shutdown
+//ABP after OTAA
 
-//Änderungen in der Stack:
+//Changes done in the MCCI LMIC Stack:
 //#define LMICbandplan_getInitialDrJoin() (EU868_DR_SF8) in lmic_bandplan_eu868.h
 //#define LMIC_PRINTF_TO Serial //USpizig  in config.h bringt aber keinerlei zusätzliche debug Ausgaben
 //in config.h Debug Messages an und RFM95 fediniert
 //in oslmic.h ersetze #define OSTICKS_PER_SEC von 32768 in 50000 //Uspizig bringt aber nix
-//in hal.cpp 
+//in hal.cpp replaced spi-begin to spi.begin(14, 2, 15, 26); to match pinning
 /*
 static void hal_spi_init () {
     //SPI.begin();//Original
@@ -16,9 +20,10 @@ static void hal_spi_init () {
 }
 */
 //for Debugging
-//#define SingleChannelMode 1 //to check on own gateway Join Behaviour only trasnmitting on 868.3 MHz
+//#define SingleChannelMode 1 //to check on own gateway Join Behaviour
 #define LMIC_DEBUG_LEVEL 1
-#define geraet1 //umgelöteter DIo0 auf pin 34
+#define geraet1 //soldered DIO0 directly to GPIO 34 and DIO01 to GPIO25  == Board identifies as COM26
+//#define geraet2 //Both DIO00 and DIO01 soldered with a Diode to GPIO 25  == Board identifies as COM7
 
 
 // How often to send a packet. Note that this sketch bypasses the normal
@@ -29,8 +34,12 @@ static void hal_spi_init () {
 // https://docs.google.com/spreadsheets/d/1voGAtQAjC1qBmaVuP1ApNKs1ekgUjavHuVQIXyYSvNc  
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 30; 
 
+#ifdef geraet1
+  const unsigned TX_INTERVAL = 30; 
+#else //limit uplinks on testboard
+  const unsigned TX_INTERVAL = 180; 
+#endif
 
 //WetterSymbols Size
 int wettercount = 1;
@@ -67,11 +76,11 @@ boolean wetter_symbol_size = true;
   #define LORA_PIN_SPI_SCK  14
   #define LORA_PIN_SPI_NSS  26  
   #define LORA_PIN_SPI_RST  33  
-  #define LORA_PIN_SPI_DIO  25
+  #define LORA_PIN_SPI_DIO1 25
   #define LORA_PIN_SPI_DIO0 34
 
 //Battery Pin
-  #define BATTERY_PIN 35
+  #define BATTERY_PIN 35 //needs to be changed later on
   
 #include <lmic.h>
 #include <hal/hal.h>
@@ -145,7 +154,7 @@ const uint32_t full_update_period_s = 60 * 60;//(jede Stunde)
 
 #ifdef geraet1
 //LORA Keys 1
-//Lora APP ID 012345
+//Lora APP ID xxxxx
   static const u1_t PROGMEM APPEUI[8]={ XXXX };
   void os_getArtEui (u1_t* buf) { memcpy_P(buf, APPEUI, 8);}
   
@@ -157,7 +166,7 @@ const uint32_t full_update_period_s = 60 * 60;//(jede Stunde)
 #else
 //LORA Keys 2
  
-//Lora App ID 02
+//Lora App ID xxxx
   static const u1_t PROGMEM APPEUI[8]={ XXX };
   void os_getArtEui (u1_t* buf) { memcpy_P(buf, APPEUI, 8);}
   
@@ -172,8 +181,7 @@ int verbunden_indicator = 0;
 int Packet_Transmission_ongoing = 0; // Display wird nur aktualisiert wenn kein Paket gesendet wird
 int packet_counter =0;
 static osjob_t sendjob;
-
-
+devaddr_t DeviceName = 0;
 
 // Pin mapping
 
@@ -182,10 +190,11 @@ const lmic_pinmap lmic_pins = {
     .rxtx = LMIC_UNUSED_PIN,
     .rst = LMIC_UNUSED_PIN,
     #ifdef geraet1
-      .dio = {LORA_PIN_SPI_DIO0, LORA_PIN_SPI_DIO, LMIC_UNUSED_PIN}, 
+      .dio = {LORA_PIN_SPI_DIO0, LORA_PIN_SPI_DIO1, LMIC_UNUSED_PIN}, 
     #else
-      .dio = {LORA_PIN_SPI_DIO, LORA_PIN_SPI_DIO, LMIC_UNUSED_PIN}, 
+      .dio = {LORA_PIN_SPI_DIO1, LORA_PIN_SPI_DIO1, LMIC_UNUSED_PIN}, 
     #endif
+    /*
     //workaround to use 1 pin for all 3 radio dio pins
     // optional: set polarity of rxtx pin.
     .rxtx_rx_active = 0,
@@ -196,7 +205,11 @@ const lmic_pinmap lmic_pins = {
     // EU, IN, other markets where LBT is not required.
     .rssi_cal = 0,
     // optional: override LMIC_SPI_FREQ if non-zero
-    .spi_freq = 0,
+    .spi_freq = 0,*/
+    .rxtx_rx_active = 0,//kopiert von TTGO Board
+    .rssi_cal = 10,//kopiert von TTGO Board
+    //.spi_freq = 8000000, /* 8MHz */ //kopiert von TTGO Board
+    .spi_freq = 4000000, //4 MHZ from GxEPD2 https://github.com/ZinggJM/GxEPD2/tree/master/extras/sw_spi
 };
 
 
@@ -230,6 +243,7 @@ void onEvent (ev_t ev) {
             break;
         case EV_JOINED:
             verbunden_indicator = 2;
+            total_seconds =0;
             Serial.println(F("EV_JOINED"));
             {
               u4_t netid = 0;
@@ -241,6 +255,7 @@ void onEvent (ev_t ev) {
               Serial.println(netid, DEC);
               Serial.print("devaddr: ");
               Serial.println(devaddr, HEX);
+              DeviceName = devaddr;
               Serial.print("AppSKey: ");
               for (size_t i=0; i<sizeof(artKey); ++i) {
                 if (i != 0)
@@ -276,7 +291,7 @@ void onEvent (ev_t ev) {
             Serial.println(F("EV_REJOIN_FAILED"));
             break;
         case EV_TXCOMPLETE:
-            verbunden_indicator = 3;
+            verbunden_indicator = 4;
             packet_counter++;
             Serial.println(F("EV_TXCOMPLETE (includes waiting for RX windows)"));
             if (LMIC.txrxFlags & TXRX_ACK)
@@ -316,6 +331,7 @@ void onEvent (ev_t ev) {
         */
         case EV_TXSTART:
             Serial.println(F("EV_TXSTART"));
+            verbunden_indicator = 3;
             break;
         case EV_TXCANCELED:
             Serial.println(F("EV_TXCANCELED"));
@@ -343,7 +359,8 @@ void do_send(osjob_t* j){
         encoder.writeTemperature(temp);
         // Prepare upstream data transmission at the next possible time.
         LMIC_setTxData2(1, buffer, sizeof(buffer), 0);
-        Serial.print("Temp:");Serial.print(temp); Serial.println(F("Packet queued"));
+        //Serial.print("Temp:");Serial.print(temp); 
+        Serial.println(F("Packet queued"));
         Packet_Transmission_ongoing = 1;
     }
     // Next TX is scheduled after TX_COMPLETE event.
@@ -360,7 +377,7 @@ void setup_eink(void){
 
 //Init Lora Stack, sets ADR Mode, 
 void setup_lora(void){
-  pinMode(LORA_PIN_SPI_DIO, INPUT_PULLDOWN);//to enable PullDown but update your ESP32 Lib to avoid https://esp32.com/viewtopic.php?t=439
+  pinMode(LORA_PIN_SPI_DIO1, INPUT_PULLDOWN);//to enable PullDown but update your ESP32 Lib to avoid https://esp32.com/viewtopic.php?t=439
   pinMode(LORA_PIN_SPI_DIO0, INPUT_PULLDOWN);
   // LMIC init
     os_init();
@@ -411,76 +428,56 @@ void setup() {
       delay(2000);
     #endif
    
-    setup_eink();
-    
+    setup_eink();   
     setup_lora();    
 }
 
 void loop() {
     os_runloop_once();
-    if (verbunden_indicator >1){//warte bis gejoined, mache dann erst Display Updates
-        //Display_connected();
-      uint32_t actual = millis();
-        while (actual < next_time)
-        {
-          // the "BlinkWithoutDelay" method works also for overflowed millis
-          if ((actual - previous_time) > (partial_update_period_s * 1000))
-          {
-            Serial.print(actual - previous_time); Serial.print(" > "); Serial.println(partial_update_period_s * 1000);
-            break;
-          }
-          delay(50);
-          actual = millis();
-        }
-        /*
-        //Serial.print("actual: "); Serial.print(actual); Serial.print(" previous: "); Serial.println(previous_time);
-        if ((actual - previous_full_update) > full_update_period_s * 1000)
-        {
-          //display.update();
-          display.update();
-          previous_full_update = actual;
-          Serial.println("Full Update gemacht:");
-        }
-        */
-        previous_time = actual;
-        next_time += uint32_t(partial_update_period_s * 1000);
-        total_seconds += partial_update_period_s;
-        seconds = total_seconds % 60;
-        minutes = (total_seconds / 60) % 60;
-        hours = (total_seconds / 3600) % 24;
-        days = (total_seconds / 3600) / 24;
-
-        // Display wird nur aktualisiert wenn keine aktive Paket Übertragung
-        if (Packet_Transmission_ongoing == 0){
-          showPartialUpdate();    
-          #ifdef BMP280_CONNECTED
+    if (verbunden_indicator == 4){
+      verbunden_indicator = 2;
+       #ifdef BMP280_CONNECTED
             Serial.print(" next_time:");Serial.println(next_time);
             BMP_Test();
           #endif
           #ifdef BME280_CONNECTED
             BME_Test();
-          #endif
-        }
-        
-        //Versuch während dem TX Warten ein Wetter durchzurotieren
-        else{
-          //Status_Info(status_symbol_x, status_symbol_y, false);
-          //showPartialUpdateWetter(wetter_symbol_x, wetter_symbol_y, wetter_symbol_size);
-          
-        }
-  }
-  else{
-    //Serial.print("not joined yet ");
-    int xyz = 0;
-    xyz++;
-  }
+       #endif
+       showPartialUpdate(); 
+       showPartialUpdateWetter(wetter_symbol_x, wetter_symbol_y, wetter_symbol_size);
+    }
 }
 
 
 
 
-// Ab hier Lora unabhängig Nutzbar
-
+//Parts below this line can be used independent from LORA and are only for displaying Stuff on the EINK
+void showPartialUpdateWetter(int x, int y, boolean IconSize){
+ int box_w = 50;
+ int box_h = 50;
+ //boolean IconSize = false;
+ display.fillRect(x, y, box_w, box_h, GxEPD_WHITE);
+ if (wettercount <12){  
+  if (wettercount == 1) Sunny(x, y, IconSize, "01d");
+  else if (wettercount == 2)  MostlySunny(x, y, IconSize, "02d");
+  else if (wettercount == 3)  Cloudy(x, y, IconSize, "03d");
+  else if (wettercount == 4)  MostlySunny(x, y, IconSize, "04d");
+  else if (wettercount == 5)  ChanceRain(x, y, IconSize, "09d");
+  else if (wettercount == 6)  Rain(x, y, IconSize, "10d");
+  else if (wettercount == 7)  Tstorms(x, y, IconSize, "11d");
+  else if (wettercount == 8)  Snow(x, y, IconSize, "13d");
+  else if (wettercount == 9)  Haze(x, y, IconSize, "50d");
+  else if (wettercount == 10) Fog(x, y, IconSize, "50n");
+  else                        Nodata(x, y, IconSize, "55d");
+  wettercount++;
+  Serial.print("Wetter-Symbol:");Serial.println(wettercount);
+ }
+ else{
+  wettercount = 1;
+ }
+ display.setFullWindow();
+ display.display(true);
+}
 
 
 void Status_Info(int x, int y, boolean IconSize){
@@ -502,7 +499,7 @@ void Display_GrundAnzeige(void){
   display.setFullWindow();
   display.fillScreen(GxEPD_WHITE);
   display.setCursor(x, y);
-  display.print("E-Ink: @USpizig");
+  display.print("LoRa Joining");
   Status_Info(status_symbol_x, status_symbol_y, false); //Zeigt Battery Status an
   display.display(false); // full update
   Serial.println("Grundanzeige done");
@@ -511,29 +508,38 @@ void Display_GrundAnzeige(void){
 
 void showPartialUpdate()
 {
+  
+  
+  total_seconds += (int)TX_INTERVAL;
+  seconds = total_seconds % 60;
+  minutes = (total_seconds / 60) % 60;
+  hours = (total_seconds / 3600) % 24;
+  days = (total_seconds / 3600) / 24;
   uint16_t box_x = 10;
-  uint16_t box_y = 25;//uint16_t box_y = 15;
+  uint16_t box_y = 5;//uint16_t box_y = 15; //y=25 war ohne DEVADDDR
   uint16_t box_w = 170;
-  uint16_t box_h = 80;//uint16_t box_h = 20; //60 ohne BMP
+  uint16_t box_h = 100;//uint16_t box_h = 20; //60 ohne BMP //war 80
   uint16_t cursor_y = box_y + 16;
   display.fillRect(box_x, box_y, box_w, box_h, GxEPD_WHITE);
   display.setFont(&FreeMonoBold12pt7b);
   display.setCursor(box_x, cursor_y);
-  display.print(days); display.print("d "); print02d(hours); display.print(":"); print02d(minutes); display.print(":"); print02d(seconds);
+  display.print("DEVADD:"); display.print(DeviceName); Serial.print("DeviceName: ");Serial.println(DeviceName);
   display.setCursor(box_x, cursor_y+20);
+  display.print(days); display.print("d "); print02d(hours); display.print(":"); print02d(minutes); display.print(":"); print02d(seconds);
+  display.setCursor(box_x, cursor_y+40);
   
   if (verbunden_indicator == 1){display.println("Joining");}
-  else if (verbunden_indicator == 2){display.println("Joined");}
-  else if (verbunden_indicator == 3){display.print("TX Count:"); display.print(packet_counter);}
+  //else if (verbunden_indicator == 2){display.println("Joined");}
+  else if (verbunden_indicator == 2){display.print("TX Count:"); display.print(packet_counter);}
   else {display.println("NO PLAN");}
   
   #ifdef BMP280_CONNECTED
-    display.setCursor(box_x, cursor_y+40);
+    display.setCursor(box_x, cursor_y+60);
     display.print("Temp:"); display.print(temp);
   #endif  
   
   #ifdef BME280_CONNECTED
-    display.setCursor(box_x, cursor_y+40);
+    display.setCursor(box_x, cursor_y+60);
     display.print("Temp:"); display.print(temp);
   #endif
   display.display(true);
@@ -612,6 +618,7 @@ void print02d(uint32_t d)
     
     void BMP_Test(void){
          
+          /* //toavoid unneccessary time for debug printouts
           Serial.print("BMP280 I2C: ");
           Serial.print("Temp = ");
           Serial.print(bmp.readTemperature());
@@ -622,8 +629,9 @@ void print02d(uint32_t d)
           Serial.print(" hPa ");
     
           Serial.print(F("Approx altitude = "));
-          Serial.print(bmp.readAltitude(1013.25)); /* Adjusted to local forecast! */
+          Serial.print(bmp.readAltitude(1013.25)); // Adjusted to local forecast! 
           Serial.println(" m");
+          */
     
           
           temp = bmp.readTemperature();
@@ -651,6 +659,11 @@ void DrawBattery(int x, int y) {
     //drawString(x + 13, y + 5,  String(voltage, 2) + "v", CENTER);
   }
 }
+/*...... you may want to add some code from G6EJD
+e.g.
+https://github.com/G6EJD/ESP32-e-Paper-Weather-Display/
+*/
+
 
 void drawString(int x, int y, String text, int align) {
   int16_t  x1, y1; //the bounds of x,y and w and h of the variable 'text' in pixels.
