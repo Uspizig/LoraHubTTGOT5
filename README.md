@@ -27,6 +27,7 @@ What you need to do to get the SW Running:
 2. Replace the two files with the ones provided in GxEPDReplace
 3. Install: https://github.com/thesolarnomad/lora-serialization
 4. Clone this Git: https://github.com/matthijskooijman/arduino-lmic
+or use the MCCI Catena (better and more up to date):https://github.com/mcci-catena/arduino-lmic
 5. Replace the files mentioned in this Pull Request: https://github.com/matthijskooijman/arduino-lmic/pull/77/files
 6. Get an App ID, from Thethingsnetwork
 7. Check if your area has LORA TTN Coverage
