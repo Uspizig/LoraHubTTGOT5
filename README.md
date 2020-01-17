@@ -3,7 +3,7 @@ DO NOT USE!!!
 Got 3 ISSUES RIGHT NOW.!!! 
 1. https://www.thethingsnetwork.org/forum/t/need-help-with-mcci-lmic-and-ttn-join-wait-issue/30846
 2. Problems on Diodes D1, D2, D3 Better use 1N4148 SOD-323
-3. RXTimeout problems where you might help me: 
+3. RXTimeout problems where you might help me:  Dont see an RX so far
 https://www.thethingsnetwork.org/forum/t/ev-txcomplete-takes-240-sec-to-finish-after-ev-txstart-due-to-rxtimeout/33439/1
 Code for this issue: in Software OTTA_Test
 
