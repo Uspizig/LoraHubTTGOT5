@@ -1,11 +1,9 @@
 # LoraHubTTGOT5
-DO NOT USE!!!
-Got 3 ISSUES RIGHT NOW.!!! 
+Please keep in mind. There are some Limitations in the TTn network right now:
 1. https://www.thethingsnetwork.org/forum/t/need-help-with-mcci-lmic-and-ttn-join-wait-issue/30846
-2. Problems on Diodes D1, D2, D3 Better use 1N4148 SOD-323
-3. RXTimeout problems where you might help me:  Dont see an RX so far
-https://www.thethingsnetwork.org/forum/t/ev-txcomplete-takes-240-sec-to-finish-after-ev-txstart-due-to-rxtimeout/33439/1
-Code for this issue: in Software OTTA_Test
+2. HW Improvement: on Diodes D1, D2, D3 Better use 1N4148 SOD-323
+3. 
+
 
 (Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
 A LORA TTN Daughter Board for a TTGO T5 Board (http://s.click.aliexpress.com/e/NPRqgBkG) with BME680, BME280, CCS811 and connection possibilities for several other I²C Boards
@@ -26,9 +24,9 @@ What you need to do to get the SW Running:
 1. Clone this Git: https://github.com/ZinggJM/GxEPD and install to your Arduino lib folder
 2. Replace the two files with the ones provided in GxEPDReplace
 3. Install: https://github.com/thesolarnomad/lora-serialization
-4. Clone this Git: https://github.com/matthijskooijman/arduino-lmic
-or use the MCCI Catena (better and more up to date):https://github.com/mcci-catena/arduino-lmic
-5. Replace the files mentioned in this Pull Request: https://github.com/matthijskooijman/arduino-lmic/pull/77/files
+4. Clone this Git: https://github.com/mcci-catena/arduino-lmic
+5A. Make the modifications mentioned in otta SW
+5B. Edidt config in the MCCI-Catena to set according yoru Country.
 6. Get an App ID, from Thethingsnetwork
 7. Check if your area has LORA TTN Coverage
 8. Try out one of the examples.
