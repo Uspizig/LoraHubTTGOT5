@@ -21,7 +21,7 @@ You may find in this Repository:
 4. Software: A how to make these things running relatively easy in an Arduino IDE
 
 What you need to do to get the SW Running:
-1. Clone this Git: https://github.com/ZinggJM/GxEPD and install to your Arduino lib folder
+1. Clone this Git: https://github.com/ZinggJM/GxEPD2 and install to your Arduino lib folder
 2. Replace the two files with the ones provided in GxEPDReplace
 3. Install: https://github.com/thesolarnomad/lora-serialization
 4. Clone this Git: https://github.com/mcci-catena/arduino-lmic
