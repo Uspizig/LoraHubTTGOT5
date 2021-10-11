@@ -46,6 +46,7 @@ Hub Board:
 3. Select SMT Assembly
 4. Solder 3 Diodes, Antenna Connector and RFM Module on the Board
 5. (Optional): Solder Battery Connector and TPL5110 Chip on the Board.
+6. I made a mistake on the FET and switched Drain and Source pin. You need to make a air wire to fix this if you want to use the TPL5110 RTC.
 
 What you need to Solder
 1. RFM95 Chip
