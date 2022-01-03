@@ -1,12 +1,10 @@
 # LoraHubTTGOT5
 Please keep in mind. There are some Limitations in the TTn network right now:
-1. https://www.thethingsnetwork.org/forum/t/need-help-with-mcci-lmic-and-ttn-join-wait-issue/30846
-2. HW Improvement: on Diodes D1, D2, D3 Better use 1N4148 SOD-323
-3. For usage with Arduino ESP32 V2.0 consider this link: .. otherwise it won't compile: https://github.com/mcci-catena/arduino-lmic/issues/714
-4. For usage with TTN V3: Pease consider this change to avoid unwanted Downlink messages. https://github.com/mcci-catena/arduino-lmic/issues/713 
+1. For usage with TTN V3: Pease consider this change to avoid unwanted Downlink messages. https://github.com/mcci-catena/arduino-lmic/issues/713 
 
 
 (Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
+DO NOT USE THIS in ANY COMMERCIAL PRODUCTS
 A LORA TTN Daughter Board for a TTGO T5 Board (http://s.click.aliexpress.com/e/NPRqgBkG) with BME680, BME280, CCS811 and connection possibilities for several other I²C Boards
 
 
