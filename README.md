@@ -52,6 +52,10 @@ What you need to Solder
 3. 3x Diodes
 (Optional) TPL5110 Chip and Battery Connector
 
+Housings:
+https://www.thingiverse.com/thing:3462483
+https://www.thingiverse.com/thing:4055993
+
 Useful Equipment.:
 - Soldering Iron TS100: http://s.click.aliexpress.com/e/Eq2v9g12
 - USB Cable: http://s.click.aliexpress.com/e/NiloJfUM
