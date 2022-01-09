@@ -5,6 +5,8 @@ Please keep in mind. There are some Limitations in the TTn network right now:
 
 (Prerequisite: This is my Hobby: No Guarantee for HW or SW. I do not take any responsibility or will help you. This is: "Take it as it is or leave it".)
 DO NOT USE THIS in ANY COMMERCIAL PRODUCTS
+
+
 A LORA TTN Daughter Board for a TTGO T5 Board (http://s.click.aliexpress.com/e/NPRqgBkG) with BME680, BME280, CCS811 and connection possibilities for several other I²C Boards
 
 
